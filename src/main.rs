@@ -1,13 +1,11 @@
 extern crate dotenv;
 
-#[macro_use]
-extern crate dotenv_codegen;
-
 use dotenv::dotenv;
 use frankenstein::Api;
 use frankenstein::SendMessageParamsBuilder;
 use frankenstein::TelegramApi;
 use serde::{Deserialize, Serialize};
+use std::env;
 
 const MIN: f32 = 273.15;
 
@@ -79,14 +77,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
 
     let resp = req().await?;
-    let api = Api::new(dotenv!("TELEGRAM_API_KEY"));
+    let api = Api::new(env::var("TELEGRAM_API_KEY").unwrap().as_str());
     let str = format!(
         "Current temperature in Kyiv is {:.4}°C",
         to_celsius(resp.main.temp).to_string()
     );
 
     let params = SendMessageParamsBuilder::default()
-        .chat_id(dotenv!("TELEGRAM_CHANNEL_ID").to_string())
+        .chat_id(env::var("TELEGRAM_CHANNEL_ID").unwrap().to_string())
         .text(str)
         .build()
         .unwrap();
@@ -99,7 +97,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 async fn req() -> Result<Data, Box<dyn std::error::Error>> {
     let resp = reqwest::get(format!(
         "https://api.openweathermap.org/data/2.5/weather?q=Kyiv&appid={}",
-        dotenv!("OPENWEATHER_API_KEY")
+        env::var("OPENWEATHER_API_KEY").unwrap().to_string()
     ))
     .await?
     .json::<Data>()
