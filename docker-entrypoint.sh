@@ -1,5 +1,4 @@
 #!/usr/bin/env sh
-set -ue
-set -x ## debug trace
+set -uex ## debug trace
 
 exec "./forecaster"
