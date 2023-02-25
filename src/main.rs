@@ -15,15 +15,15 @@ struct Data {
     weather: Vec<Weather>,
     base: String,
     main: Main,
-    visibility: i32,
     wind: Wind,
     clouds: Clouds,
-    dt: i64,
     sys: Sys,
+    name: String,
+    visibility: i32,
     timezone: i32,
     id: i32,
-    name: String,
     cod: i32,
+    dt: i64,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
