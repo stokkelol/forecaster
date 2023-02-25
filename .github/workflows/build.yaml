@@ -22,3 +22,25 @@ jobs:
           SRC_DIR: "src"
           ARCHIVE_TYPES: ${{ matrix.archive }}
           MINIFY: "yes"
+  deploy:
+    name: deploy ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            - sleep 60
+            - docker stop $(docker ps -a -q --filter ancestor=alexandergulyiy/forecaster --format={{.ID}}) || true
+            - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
+            - docker pull alexandergulyiy/forecaster:latest
+            - docker run -d --rm \
+              -e TELEGRAM_API_KEY=$TELEGRAM_API_KEY \
+              -e TELEGRAM_CHANNEL_ID=$TELEGRAM_CHANNEL_ID \
+              -e OPENWEATHER_API_KEY=$OPENWEATHER_API_KEY \
+              -p 8082:9000 --volume /etc/badger-pb:/tmp/badger alexandergulyiy/forecaster
+            
