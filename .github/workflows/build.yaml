@@ -1,27 +1,11 @@
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
+
+name: Build
 
 jobs:
-  release:
-    name: release ${{ matrix.target }}
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: true
-      matrix:
-        target: [ x86_64-unknown-linux-musl ]
-    timeout-minutes: 10
-    steps:
-      - uses: actions/checkout@main
-      - name: Compile and release
-        uses: rust-build/rust-build.action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RUSTTARGET: ${{ matrix.target }}
-          EXTRA_FILES: "README.md"
-          SRC_DIR: "src"
-          ARCHIVE_TYPES: ${{ matrix.archive }}
-          MINIFY: "yes"
   deploy:
     name: deploy ${{ matrix.target }}
     runs-on: ubuntu-latest
@@ -43,4 +27,3 @@ jobs:
               -e TELEGRAM_CHANNEL_ID=$TELEGRAM_CHANNEL_ID \
               -e OPENWEATHER_API_KEY=$OPENWEATHER_API_KEY \
               -p 8082:9000 --volume /etc/badger-pb:/tmp/badger alexandergulyiy/forecaster
-            
