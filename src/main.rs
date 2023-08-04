@@ -89,7 +89,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .unwrap();
 
-    api.send_message(&params);
+    api.send_message(&params).await?;
 
     Ok(())
 }
