@@ -2,7 +2,7 @@ extern crate dotenv;
 
 use dotenv::dotenv;
 use frankenstein::Api;
-use frankenstein::SendMessageParamsBuilder;
+use frankenstein::SendMessageParams;
 use frankenstein::TelegramApi;
 use serde::{Deserialize, Serialize};
 use std::env;
@@ -83,13 +83,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         to_celsius(resp.main.temp).to_string()
     );
 
-    let params = SendMessageParamsBuilder::default()
+    let params = SendMessageParams::builder()
         .chat_id(env::var("TELEGRAM_CHANNEL_ID").unwrap().to_string())
         .text(str)
-        .build()
-        .unwrap();
+        .build();
 
-    api.send_message(&params);
+    api.send_message(&params).expect("Error sending API request.");
 
     Ok(())
 }
