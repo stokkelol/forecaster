@@ -79,8 +79,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let resp = req().await?;
     let api = Api::new(env::var("TELEGRAM_API_KEY").unwrap().as_str());
     let str = format!(
-        "Current temperature in Kyiv is {:.4}°C",
-        to_celsius(resp.main.temp).to_string()
+        "Current temperature in Kyiv is {:.4}°C, feels like {:.2}°C; {}.",
+        to_celsius(resp.main.temp).to_string(), to_celsius(resp.main.feels_like), resp.weather.first().unwrap().description
     );
 
     let params = SendMessageParams::builder()
