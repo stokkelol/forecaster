@@ -64,9 +64,6 @@ struct Clouds {
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Sys {
-    #[serde(rename(deserialize = "type"))]
-    typ: i32,
-    id: i32,
     country: String,
     sunrise: i64,
     sunset: i64,
